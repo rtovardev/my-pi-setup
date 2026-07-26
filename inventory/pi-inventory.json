@@ -3,6 +3,7 @@
     "extensions": {
       "aios-clip/index.ts": "53df439db600b87f24075b30908b9df4a83eba1bf391951b80ea8eecab159fd5",
       "aios-control-panel/index.ts": "5634c689980c36d885c4546b15ef6c51ed52e646001dcfb8372514479bd74750",
+      "aios-token-hook/index.ts": "1569de71c06844c7328bfd89e1c23561d5c264ba4d61f2db91e183244aa087a8",
       "aios-usage-dashboard/index.ts": "6c9e2b701ba07c78c8c57549b5cb3b8bfd09c41ebb5a06a9ada770466805b393",
       "atuin.ts": "4d9a223f23211ef732c2b0bfe2ef92af5b38689a560c8d3517dee0a4392be3d9",
       "copyall.ts": "54f1000931cb91405c30b9e72014af59bac1a5fa83ecc1524f69ea7b8ff79ce5",
