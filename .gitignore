@@ -1,0 +1,10 @@
+# Local files only
+.env
+.env.*
+*.local
+.DS_Store
+
+# Never commit generated or copied sensitive state
+private/
+secrets/
+*.log

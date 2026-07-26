@@ -1,0 +1,76 @@
+{
+  "pi": {
+    "extensions": {
+      "aios-clip/index.ts": "53df439db600b87f24075b30908b9df4a83eba1bf391951b80ea8eecab159fd5",
+      "aios-control-panel/index.ts": "5634c689980c36d885c4546b15ef6c51ed52e646001dcfb8372514479bd74750",
+      "aios-usage-dashboard/index.ts": "6c9e2b701ba07c78c8c57549b5cb3b8bfd09c41ebb5a06a9ada770466805b393",
+      "atuin.ts": "4d9a223f23211ef732c2b0bfe2ef92af5b38689a560c8d3517dee0a4392be3d9",
+      "copyall.ts": "54f1000931cb91405c30b9e72014af59bac1a5fa83ecc1524f69ea7b8ff79ce5",
+      "custom-header.ts": "37638d474a25d267723c80f05067bb234b58698299796ad6fc290e11ee9b8118",
+      "herdr-agent-state.ts": "ca8a36ba074ce10dab204f1fb3abd270c3dabc0d927d978c2613f073c5261e22",
+      "herdr-session-name-sync.ts": "86931789b75d38abd3f17050e3b82780b24831a75e23ee14f95b19a3c8e5f416",
+      "pi-attach/index.ts": "fa5b69c07e902ba76a05253bb0dde595f31031dae87d0ebe9d2a7d8c5806143c",
+      "pi-awake.ts": "ca63677f6ffe646d35d5fad3cd8cfd4cd0d74fea359cbce39272aa4ac42819ca",
+      "vim-mode/index.ts": "59cecd2089f28d6ab03a198cafd6bc7d81f6e8b940f5deb4612a61468c2a9664"
+    },
+    "mcp_server_names": [
+      "canva",
+      "context-mode",
+      "docs-langchain",
+      "gcloud",
+      "hostinger-vps",
+      "openrouter",
+      "render"
+    ],
+    "packages": [
+      "@llblab/pi-telegram",
+      "context-mode",
+      "pi-ask-user",
+      "pi-btw",
+      "pi-codex-account",
+      "pi-goal",
+      "pi-hermes-memory",
+      "pi-intercom",
+      "pi-lean-ctx",
+      "pi-markdown-preview",
+      "pi-mcp-adapter",
+      "pi-package-manager",
+      "pi-paster",
+      "pi-subagents",
+      "pi-web-access"
+    ],
+    "skills": [
+      "deep-agents-core",
+      "deep-agents-memory",
+      "deep-agents-orchestration",
+      "ecosystem-primer",
+      "find-skills",
+      "herdr",
+      "langchain-dependencies",
+      "langchain-fundamentals",
+      "langchain-middleware",
+      "langchain-rag",
+      "langgraph-cli",
+      "langgraph-fundamentals",
+      "langgraph-human-in-the-loop",
+      "langgraph-persistence",
+      "managed-deep-agents",
+      "rtovar-branding-kit",
+      "swarm"
+    ],
+    "themes": [
+      "github-dark-default.json"
+    ],
+    "version": "0.82.1"
+  },
+  "platform": {
+    "release": "25.5.0",
+    "system": "Darwin"
+  },
+  "privacy": {
+    "contains_absolute_paths": false,
+    "contains_credentials": false,
+    "contains_raw_configuration": false
+  },
+  "schema_version": 1
+}
