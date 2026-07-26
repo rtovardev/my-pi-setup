@@ -24,7 +24,11 @@ Do not add any of the following, directly or indirectly:
 
 ## Required validation before a push
 
-`scripts/sync.sh` runs `scripts/check-public.sh`. It rejects unexpected paths and common credential patterns. This scanner is a safety net, not proof that a file is safe. Review `git diff --cached` yourself before answering the push prompt.
+`scripts/sync.sh` runs `scripts/check-public.sh`. It rejects unexpected paths and common credential patterns. This scanner is a safety net, not proof that a file is safe.
+
+The approved weekly maintenance workflow may use `./scripts/sync.sh --draft-pr` only from a clean, dedicated non-`main` worktree. It validates the staged diff, pushes only that isolated branch, and creates/updates a Draft PR. It cannot push `main` or merge the PR. Ricardo reviews the public diff in GitHub before merging.
+
+Interactive runs still show `git diff --cached` before asking for a push.
 
 If a useful Pi setting is too personal to publish, document its **purpose** in `docs/` and explain how another user can recreate it. Do not publish the original file.
 

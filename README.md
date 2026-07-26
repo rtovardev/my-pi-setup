@@ -49,7 +49,13 @@ For a non-interactive local commit without a push:
 ./scripts/sync.sh --no-push
 ```
 
-A push is never automatic. This is intentional: public publication needs a human approval gate.
+The approved weekly maintenance workflow runs only from a clean, dedicated non-`main` worktree:
+
+```bash
+./scripts/sync.sh --draft-pr
+```
+
+It re-runs the allowlist and secret checks, commits locally, pushes **only its isolated branch**, and creates or updates a Draft PR. It never pushes `main` or merges the PR. Public publication still requires Ricardo's GitHub review and merge.
 
 ## Restore a setup
 
