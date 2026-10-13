@@ -1,0 +1,3 @@
+# Linux-only Pi packages.
+# Add the selected desktop/computer-use package here once its exact name is confirmed.
+# OS-level dependencies and desktop-session setup are documented separately from Pi installs.

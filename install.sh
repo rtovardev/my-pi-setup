@@ -8,11 +8,22 @@ if ! command -v pi >/dev/null 2>&1; then
   exit 1
 fi
 
-while IFS= read -r package || [[ -n "$package" ]]; do
-  [[ -z "$package" || "$package" == \#* ]] && continue
-  printf '\n==> Installing %s\n' "$package"
-  pi install "$package"
-done < "$ROOT/packages.txt"
+install_packages() {
+  local manifest="$1"
+  [[ -f "$manifest" ]] || return 0
+
+  local package
+  while IFS= read -r package || [[ -n "$package" ]]; do
+    [[ -z "$package" || "$package" == \#* ]] && continue
+    printf '\n==> Installing %s\n' "$package"
+    pi install "$package"
+  done < "$manifest"
+}
+
+install_packages "$ROOT/packages/common.txt"
+if [[ "$(uname -s)" == "Linux" ]]; then
+  install_packages "$ROOT/packages/linux.txt"
+fi
 
 AGENT_DIR="${PI_CODING_AGENT_DIR:-$HOME/.pi/agent}"
 node "$ROOT/scripts/apply-settings.mjs" "$AGENT_DIR/settings.json" "$ROOT/settings.json"
