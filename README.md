@@ -30,7 +30,7 @@ Package sources are intentionally unpinned, matching the current Pi setup; npm's
 
 ## What's shared
 
-- Pi packages: extensions, tools, skills, prompts, and themes in `packages/common.txt`, installed on both macOS and Linux.
+- Pi packages: extensions, tools, skills, prompts, and themes in `packages/common.txt`, installed on both macOS and Linux. This includes the Pi Topping suite: `pi-topping`, `pi-topping-statusline`, `pi-topping-splash`, `pi-topping-persona-audit`, `pi-topping-web-tools`, and `pi-topping-moa-fusion`.
 - Default provider/model: `openai-codex` / `gpt-6.1-sol`.
 - Theme and startup preferences.
 - `pi-lens` for automatic, language-aware feedback while the agent edits: LSP diagnostics, supported linters/type checkers, related-test checks, structural/security findings, and read-before-edit guidance. Depending on project tools and configuration, it can also format or autofix files.
