@@ -33,6 +33,20 @@ Package sources are intentionally unpinned, matching the current Pi setup; npm's
 - Pi packages: extensions, tools, skills, prompts, and themes in `packages/common.txt`, installed on both macOS and Linux.
 - Default provider/model: `openai-codex` / `gpt-6.1-sol`.
 - Theme and startup preferences.
+- `pi-lens` for automatic, language-aware feedback while the agent edits: LSP diagnostics, supported linters/type checkers, related-test checks, structural/security findings, and read-before-edit guidance. Depending on project tools and configuration, it can also format or autofix files.
+- `pi-codex-account-switcher` for switching between OpenAI Codex accounts in Pi.
+
+### Using pi-lens
+
+Most checks run automatically as the agent writes or edits files; no separate command is needed. In interactive Pi, you can:
+
+- Run `/lens-widget-toggle` to show or hide the diagnostics summary.
+- Run `/lens-health` to inspect pi-lens runtime health and diagnostic telemetry.
+- Run `/lens-map` to generate an interactive dependency map.
+- Run `/lens-toggle` to enable or disable pi-lens for the current session.
+- Run `/lens-context-toggle` to toggle automatic findings in the agent's context while leaving diagnostics and other tools active.
+
+Pi-lens may reformat or autofix files when suitable project tools are available. Review those changes, and treat partial or degraded diagnostics as incomplete rather than as proof that the project is clean. The commit/push blocker guard is opt-in and is not enabled by this setup.
 
 ## Linux-only packages
 

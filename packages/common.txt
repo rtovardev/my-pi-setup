@@ -13,4 +13,5 @@ npm:@underactive/pi-topping-web-tools
 npm:@underactive/pi-topping-moa-fusion
 npm:pi-goal-x
 npm:agent-comms
-npm:openwiki
+npm:pi-lens
+npm:pi-codex-account-switcher
