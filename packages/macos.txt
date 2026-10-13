@@ -1,0 +1,2 @@
+# macOS-only Pi packages.
+# No macOS-only packages currently required; Computer Use is in common.txt.

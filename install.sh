@@ -21,9 +21,10 @@ install_packages() {
 }
 
 install_packages "$ROOT/packages/common.txt"
-if [[ "$(uname -s)" == "Linux" ]]; then
-  install_packages "$ROOT/packages/linux.txt"
-fi
+case "$(uname -s)" in
+  Darwin) install_packages "$ROOT/packages/macos.txt" ;;
+  Linux) install_packages "$ROOT/packages/linux.txt" ;;
+esac
 
 AGENT_DIR="${PI_CODING_AGENT_DIR:-$HOME/.pi/agent}"
 node "$ROOT/scripts/apply-settings.mjs" "$AGENT_DIR/settings.json" "$ROOT/settings.json"

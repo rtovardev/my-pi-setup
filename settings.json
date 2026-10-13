@@ -5,5 +5,8 @@
   "extensions": [
     "-builtin:mcp"
   ],
+  "defaultTools": [
+    "+codemode"
+  ],
   "quietStartup": true
 }

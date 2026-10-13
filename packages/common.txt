@@ -9,3 +9,4 @@ npm:pi-goal-x
 npm:agent-comms
 npm:pi-lens
 npm:pi-codex-account-switcher
+npm:@amaster.ai/pi-computer-use

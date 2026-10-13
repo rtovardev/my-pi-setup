@@ -18,7 +18,7 @@ cd my-pi-setup
 ./install.sh
 ```
 
-The script installs every Pi package listed in [`packages/common.txt`](packages/common.txt), then installs [`packages/linux.txt`](packages/linux.txt) only on Linux. It then applies the shared preferences in [`settings.json`](settings.json), merging them into `~/.pi/agent/settings.json` (or `$PI_CODING_AGENT_DIR/settings.json`) and backing up the existing file before changing it. Other settings and the package list are preserved.
+The script installs every Pi package listed in [`packages/common.txt`](packages/common.txt), then installs the platform-specific list: [`packages/macos.txt`](packages/macos.txt) on macOS or [`packages/linux.txt`](packages/linux.txt) on Linux. It then applies the shared preferences in [`settings.json`](settings.json), merging them into `~/.pi/agent/settings.json` (or `$PI_CODING_AGENT_DIR/settings.json`) and backing up the existing file before changing it. Other settings and the package list are preserved.
 
 After changing the package list or shared preferences, commit and push the changes. To refresh already-installed packages, run:
 
@@ -48,12 +48,22 @@ Most checks run automatically as the agent writes or edits files; no separate co
 
 Pi-lens may reformat or autofix files when suitable project tools are available. Review those changes, and treat partial or degraded diagnostics as incomplete rather than as proof that the project is clean. The commit/push blocker guard is opt-in and is not enabled by this setup.
 
-## Linux-only packages
+## Cross-platform Computer Use
 
-Put packages that require Linux (for example, a desktop/computer-use integration) in `packages/linux.txt`. The installer applies that list only when `uname -s` reports `Linux`. The list is intentionally empty until the exact package is chosen. This script installs Pi packages; any OS-level dependencies or desktop-session setup will need separate instructions.
+`npm:@amaster.ai/pi-computer-use` is installed on both macOS and Linux. It bundles Cua Driver 0.34.0 for desktop accessibility, screenshots, native input, and optional browser tools. Restart Pi or run `/reload` after installation.
+
+The default `core` tool profile keeps optional groups deferred. Keep app-launch and dangerous-action confirmations enabled. On macOS, the signed `CuaDriver.app` requests Accessibility and Screen Recording permissions on first use. On Ubuntu, run in the active graphical user's session; Wayland capabilities depend on the compositor and may require additional helpers and permission grants. Installation alone does not verify desktop control.
+
+Use `/computer-use-tools diagnostics` to expose permission and health tools. The extension owns its driver lifecycle; it does not install a persistent system service. This is the sole desktop controller in this setup; the previous macOS Codex adapter has been removed.
+
+## Platform-specific packages
+
+Keep packages that require a particular operating system in a separate manifest: `packages/macos.txt` for macOS and `packages/linux.txt` for Linux. The installer selects exactly one based on `uname -s`; platform-specific packages are not installed on the other OS.
+
+This script installs Pi packages; any OS-level dependencies, app installation, permissions, or desktop-session setup need separate instructions.
 
 ## What's intentionally local
 
-Do not commit or sync API credentials, OAuth tokens, sessions, trust decisions, or machine-specific MCP/server configuration. In particular, keep `auth.json`, `mcp-auth.json`, `mcp.json`, and adapter-specific configuration local. Linux-only desktop/computer-use packages are listed separately and should run on the Linux desktop that owns the display session.
+Do not commit or sync API credentials, OAuth tokens, sessions, trust decisions, or machine-specific MCP/server configuration. In particular, keep `auth.json`, `mcp-auth.json`, `mcp.json`, and adapter-specific configuration local. Cross-platform computer-use packages belong in the common manifest; OS-specific alternatives belong in platform manifests. Desktop control should run in the local, unlocked desktop session that owns the display.
 
 Pi extensions run with the permissions of the local user. Review packages before installing or updating them, especially before running this public setup on another machine.
