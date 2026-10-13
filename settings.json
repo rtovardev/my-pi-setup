@@ -1,0 +1,9 @@
+{
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-6.1-sol",
+  "theme": "system",
+  "extensions": [
+    "-builtin:mcp"
+  ],
+  "quietStartup": true
+}

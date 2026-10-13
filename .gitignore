@@ -1,0 +1,10 @@
+.env
+.env.*
+!.env.example
+**/auth.json
+**/mcp-auth.json
+**/mcp.json
+**/mcp-adapter.json
+**/trust.json
+**/sessions/
+*.bak-*
