@@ -35,6 +35,7 @@ Package sources are intentionally unpinned, matching the current Pi setup; npm's
 - Theme and startup preferences.
 - `pi-lens` for automatic, language-aware feedback while the agent edits: LSP diagnostics, supported linters/type checkers, related-test checks, structural/security findings, and read-before-edit guidance. Depending on project tools and configuration, it can also format or autofix files.
 - `pi-codex-account-switcher` for switching between OpenAI Codex accounts in Pi.
+- `AGENTS.md` with the shared working agreements: where the personal and company memory lives, the third-party integration gateway, and the spend limit of the instant tools. A different local copy is backed up under `backups/AGENTS.md/` before it is replaced.
 
 ### Using pi-lens
 
