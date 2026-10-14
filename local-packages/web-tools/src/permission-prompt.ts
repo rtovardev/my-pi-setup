@@ -1,0 +1,124 @@
+/**
+ * Shared host-permission prompt for web tools.
+ *
+ * Replaces the duplicated select/session-map logic in fetch_markdown,
+ * pdf_extract, and web_browser. Supports durable grants for http/https origins
+ * and session-only prompts for file:// origins.
+ */
+
+import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
+import { isGranted, addGrant, type PermissionScope, DAY_MS, WEEK_MS, MONTH_MS } from "./permission-store.ts";
+import { isLocalOrPrivateHost } from "./web-browser/permissions.ts";
+
+// Operator-approved policy: ordinary public web reads/navigation need no host
+// dialog. File access and private/local origins retain explicit confirmation.
+function isPublicWebOrigin(key: string): boolean {
+	try {
+		const url = new URL(key);
+		return (url.protocol === "http:" || url.protocol === "https:") &&
+			!url.username && !url.password && url.hostname.includes(".") &&
+			!isLocalOrPrivateHost(url.hostname);
+	} catch {
+		return false;
+	}
+}
+
+export type PermissionPromptResult = { allowed: true } | { allowed: false; reason: string };
+
+type SessionPermissions = Map<string, "allow" | "deny">;
+
+/** Prompt the user for host access; `durable` adds 1-day/1-week/30-day options, otherwise session-only. */
+export async function requestHostPermission(
+	ctx: ExtensionContext,
+	{
+		scope,
+		label,
+		key,
+		sessionPermissions,
+		durable,
+	}: {
+		scope: PermissionScope;
+		label: string;
+		key: string;
+		sessionPermissions: SessionPermissions;
+		durable: boolean;
+	},
+): Promise<PermissionPromptResult> {
+	if (ctx.signal?.aborted) {
+		return { allowed: false, reason: "Web permission cancelled with the turn." };
+	}
+
+	// Session deny
+	const sessionDecision = sessionPermissions.get(key);
+	if (sessionDecision === "deny") {
+		return { allowed: false, reason: `Denied by user for ${key}` };
+	}
+
+	// Session allow
+	if (sessionDecision === "allow") {
+		return { allowed: true };
+	}
+
+	// Durable grant
+	if (durable && isGranted(scope, key)) {
+		return { allowed: true };
+	}
+
+	if (durable && isPublicWebOrigin(key)) {
+		return { allowed: true };
+	}
+
+	// No UI — block
+	if (!ctx.hasUI) {
+		return { allowed: false, reason: `${scope} to ${key} blocked (no UI for confirmation)` };
+	}
+
+	// Prompt
+	const options = durable
+		? ["Allow once", "Allow for this session", "Allow for 1 day", "Allow for 1 week", "Allow for 30 days", "Deny"]
+		: ["Allow once", "Allow for this session", "Deny"];
+
+	const choice = await ctx.ui.select(label, options, { signal: ctx.signal, timeout: 15_000 });
+	if (choice === undefined) {
+		return { allowed: false, reason: ctx.signal?.aborted
+			? "Web permission cancelled with the turn."
+			: "Web permission dismissed or timed out after 15s." };
+	}
+
+	if (choice === "Allow for this session") {
+		sessionPermissions.set(key, "allow");
+		return { allowed: true };
+	}
+
+	if (choice === "Allow once") {
+		return { allowed: true };
+	}
+
+	if (choice === "Deny") {
+		sessionPermissions.set(key, "deny");
+		return { allowed: false, reason: `Denied by user for ${key}` };
+	}
+
+	// Durable duration choices
+	let ttlMs: number | undefined;
+	if (choice === "Allow for 1 day") ttlMs = DAY_MS;
+	else if (choice === "Allow for 1 week") ttlMs = WEEK_MS;
+	else if (choice === "Allow for 30 days") ttlMs = MONTH_MS;
+
+	if (ttlMs !== undefined) {
+		const persisted = await addGrant(scope, key, ttlMs);
+		if (!persisted) {
+			// Persist failure — downgrade to session grant.
+			sessionPermissions.set(key, "allow");
+			ctx.ui.notify(
+				`Could not save durable permission; allowing for this session only.`,
+				"warning",
+			);
+		}
+		return { allowed: true };
+	}
+
+	// Fallback (unexpected choice)
+	sessionPermissions.set(key, "deny");
+	return { allowed: false, reason: `Denied by user for ${key}` };
+}

@@ -2,6 +2,13 @@
 set -euo pipefail
 
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+WITH_BROWSER=()
+if [[ "${1:-}" == "--with-browser" && $# == 1 ]]; then
+  WITH_BROWSER=(--with-browser)
+elif [[ $# != 0 ]]; then
+  printf 'Usage: ./install.sh [--with-browser]\n' >&2
+  exit 2
+fi
 
 if ! command -v pi >/dev/null 2>&1; then
   printf 'Error: Pi is not installed or not on PATH.\n' >&2
@@ -54,6 +61,8 @@ esac
 
 AGENT_DIR="${PI_CODING_AGENT_DIR:-$HOME/.pi/agent}"
 install_shared_agents_md
+node "$ROOT/scripts/install-web-tools.mjs" "$AGENT_DIR" "${WITH_BROWSER[@]}"
 node "$ROOT/scripts/apply-settings.mjs" "$AGENT_DIR/settings.json" "$ROOT/settings.json"
 
 printf '\nPi setup applied. Local credentials and machine-specific config were left untouched.\n'
+printf 'Restart Pi or run /reload in every open session to activate the changes.\n'

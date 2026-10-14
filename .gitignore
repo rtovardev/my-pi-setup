@@ -8,3 +8,4 @@
 **/trust.json
 **/sessions/
 *.bak-*
+**/node_modules/

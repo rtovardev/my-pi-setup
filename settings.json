@@ -2,8 +2,20 @@
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-6.1-sol",
   "theme": "system",
+  "packages": [
+    {
+      "source": "npm:agent-comms",
+      "extensions": []
+    },
+    {
+      "source": "npm:@underactive/pi-topping-web-tools",
+      "extensions": []
+    },
+    "./local-packages/web-tools"
+  ],
   "extensions": [
-    "-builtin:mcp"
+    "-builtin:mcp",
+    "./npm/node_modules/agent-comms/dist/bridges/pi/extension.js"
   ],
   "defaultTools": [
     "+codemode"

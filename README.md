@@ -18,7 +18,7 @@ cd my-pi-setup
 ./install.sh
 ```
 
-The script installs every Pi package listed in [`packages/common.txt`](packages/common.txt), then installs the platform-specific list: [`packages/macos.txt`](packages/macos.txt) on macOS or [`packages/linux.txt`](packages/linux.txt) on Linux. It then applies the shared preferences in [`settings.json`](settings.json), merging them into `~/.pi/agent/settings.json` (or `$PI_CODING_AGENT_DIR/settings.json`) and backing up the existing file before changing it. Other settings and the package list are preserved.
+The script installs every Pi package listed in [`packages/common.txt`](packages/common.txt), then installs the platform-specific list: [`packages/macos.txt`](packages/macos.txt) on macOS or [`packages/linux.txt`](packages/linux.txt) on Linux. It also installs the maintained local web tools with their lockfile before applying the shared preferences in [`settings.json`](settings.json), merging them into `~/.pi/agent/settings.json` (or `$PI_CODING_AGENT_DIR/settings.json`) and backing up the existing file before changing it. Other settings and installed packages are preserved; shared package filters are merged by source rather than replacing the package list.
 
 After changing the package list or shared preferences, commit and push the changes. To refresh already-installed packages, run:
 
@@ -26,7 +26,7 @@ After changing the package list or shared preferences, commit and push the chang
 pi update --extensions
 ```
 
-Package sources are intentionally unpinned, matching the current Pi setup; npm's current version is installed when setting up a machine. Existing extra packages on a machine are not removed automatically.
+Registry package sources are intentionally unpinned, matching the current Pi setup; npm's current version is installed when setting up a machine. Dependencies of the maintained local web package are locked. Existing extra packages and unrelated local extensions on a machine are not removed automatically. Pi core itself is not upgraded by this installer; this setup is verified with Pi 1.2.0.
 
 ## What's shared
 
@@ -36,6 +36,37 @@ Package sources are intentionally unpinned, matching the current Pi setup; npm's
 - `pi-lens` for automatic, language-aware feedback while the agent edits: LSP diagnostics, supported linters/type checkers, related-test checks, structural/security findings, and read-before-edit guidance. Depending on project tools and configuration, it can also format or autofix files.
 - `pi-codex-account-switcher` for switching between OpenAI Codex accounts in Pi.
 - `AGENTS.md` with the shared working agreements: where the personal and company memory lives, the third-party integration gateway, and the spend limit of the instant tools. A different local copy is backed up under `backups/AGENTS.md/` before it is replaced.
+- `@bacnh85/pi-attachments` for file attachments and `pi-btw` for side conversations.
+- `agent-comms` with package extension discovery disabled and its Pi bridge loaded explicitly. The bridge path is relative to the agent directory, so it also works with `PI_CODING_AGENT_DIR` without committing a personal absolute path.
+
+The manifests match the configured Pi packages as of 2026-10-14. `pi-rename-session` is no longer in the current installation and is not part of this setup. Herdr plugins and the local `herdr-agent-state.ts` integration are not managed by this Pi installer; they are left unchanged.
+
+## Maintained web tools
+
+[`local-packages/web-tools`](local-packages/web-tools/HARNESS_FIX.md) contains the maintained correction based on `@underactive/pi-topping-web-tools@0.2.8`. The upstream package stays installed with `extensions: []`; only the local copy provides `fetch_markdown`, `pdf_extract`, and `web_browser`. Other Topping extensions are unchanged.
+
+Public HTTP(S) reads no longer ask for approval for every host. Explicit session denials, private/local destinations, and local-file confirmations remain enforced. Permission dialogs have a 15-second deadline and honor turn cancellation. HTML and PDF processing run in killable workers; downloads and extraction have bounded deadlines. Browser markdown conversion uses the same worker.
+
+The installer uses a staging directory, omits install scripts and dev/peer dependencies, and preserves the previous package under the agent directory's `backups/web-tools/`. Package paths in shared settings are relative to the agent directory; no dependency symlinks or machine-specific paths are copied.
+
+To also provision the Playwright headless Chromium required by `web_browser`:
+
+```bash
+./install.sh --with-browser
+```
+
+Restart Pi or run `/reload` in each open session after applying the setup. Credentials, trust decisions, MCP configuration, and the Pi core version are not copied between machines. Public-read permission is not permission to submit forms, publish content, or change external accounts.
+
+Run the offline regression suite:
+
+```bash
+node --test scripts/*.test.mjs
+cd local-packages/web-tools
+npm ci --ignore-scripts
+npm test
+```
+
+A runtime installation omits dev/peer dependencies; its tests can use the installed Pi host by setting `PI_TEST_HOST_ROOT` to the host's `node_modules` directory.
 
 ### Using pi-lens
 
