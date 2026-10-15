@@ -53,7 +53,8 @@ const merged = { ...current, ...defaults };
 if (defaults.extensions !== undefined) {
   // Migrate the old absolute agent-comms bridge, preserving unrelated local extensions.
   const local = (current.extensions ?? []).filter((entry) =>
-    !entry.endsWith("/agent-comms/dist/bridges/pi/extension.js"));
+    !entry.endsWith("/agent-comms/dist/bridges/pi/extension.js") &&
+    !entry.endsWith("/agent-comms-guard.mjs"));
   merged.extensions = [...new Set([...local, ...defaults.extensions])];
 }
 if (current.packages !== undefined || defaults.packages !== undefined) {

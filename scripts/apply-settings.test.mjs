@@ -8,7 +8,7 @@ import test from "node:test";
 const script = new URL("./apply-settings.mjs", import.meta.url);
 const defaults = new URL("../settings.json", import.meta.url);
 const shared = JSON.parse(await readFile(defaults, "utf8"));
-const bridge = "./npm/node_modules/agent-comms/dist/bridges/pi/extension.js";
+const bridge = "./local-packages/agent-comms-guard.ts";
 
 async function fixture(t, current) {
   const dir = await mkdtemp(join(tmpdir(), "pi-setup-test-"));
@@ -24,7 +24,7 @@ test("merges package filters, preserves local settings, backs up once, and is id
   const current = {
     packages: ["npm:pi-btw", "npm:agent-comms", { source: "npm:local-extra", skills: [] }],
     skills: ["/local/skills"],
-    extensions: ["-builtin:mcp", "/old/agent-comms/dist/bridges/pi/extension.js", "/local/custom.ts"],
+    extensions: ["-builtin:mcp", "/old/agent-comms/dist/bridges/pi/extension.js", "./npm/node_modules/agent-comms/dist/bridges/pi/extension.js", "/local/custom.ts"],
     theme: "dark",
   };
   const f = await fixture(t, current);

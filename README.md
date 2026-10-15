@@ -37,9 +37,33 @@ Registry package sources are intentionally unpinned, matching the current Pi set
 - `pi-codex-account-switcher` for switching between OpenAI Codex accounts in Pi.
 - `AGENTS.md` with the shared working agreements: where the personal and company memory lives, the third-party integration gateway, and the spend limit of the instant tools. A different local copy is backed up under `backups/AGENTS.md/` before it is replaced.
 - `@bacnh85/pi-attachments` for file attachments and `pi-btw` for side conversations.
-- `agent-comms` with package extension discovery disabled and its Pi bridge loaded explicitly. The bridge path is relative to the agent directory, so it also works with `PI_CODING_AGENT_DIR` without committing a personal absolute path.
+- `agent-comms` with package extension discovery disabled and its Pi bridge loaded through a version-checked local guard. Paths are relative to the agent directory and support `PI_CODING_AGENT_DIR`.
 
 The manifests match the configured Pi packages as of 2026-10-14. `pi-rename-session` is no longer in the current installation and is not part of this setup. Herdr plugins and the local `herdr-agent-state.ts` integration are not managed by this Pi installer; they are left unchanged.
+
+## Agent Comms: local-only discovery safety patch
+
+`agent-comms@8.13.20` broadcasts mesh ports on the LAN even though its data listener binds to `127.0.0.1`. Other machines repeatedly try the unreachable ports and Pi displays `connectToPeer ... ECONNREFUSED` notifications.
+
+[`scripts/patch-agent-comms.mjs`](scripts/patch-agent-comms.mjs) stops LAN mesh advertisements, probes, inbound mesh discovery and automatic remote peer dials (including stale peer lists relayed by old coordinators). Same-machine multicast discovery, TLS, the local coordinator, hub support and independent web-UI discovery remain unchanged. Genuine errors are still reported. **This deliberately does not enable cross-machine Mac/MSI messaging**; that requires an upstream networking fix or separately configured relay. No data ports are exposed and no trust/TLS checks are weakened.
+
+The installer applies the patch and installs a guard at `local-packages/agent-comms-guard.ts`; the guard checks it before importing the bridge on each new Pi process. A same-version `pi update` is repaired automatically. An unreviewed version or modified source is refused rather than overwritten. Both original modules are backed up with their checksums under `backups/agent-comms/8.13.20/`.
+
+**Restart every open Pi session on both machines.** `/reload` is not sufficient evidence because imported dependency modules may stay cached. Old processes keep the previous network behavior until restarted; the installer does not terminate them.
+
+Manual apply (the installer also installs the startup guard):
+
+```bash
+node scripts/patch-agent-comms.mjs "${PI_CODING_AGENT_DIR:-$HOME/.pi/agent}"
+```
+
+To roll back, restore the original with the command below, replace the guard entry in Pi settings with `./npm/node_modules/agent-comms/dist/bridges/pi/extension.js`, then restart Pi. Otherwise the guard reapplies the safety policy at startup.
+
+```bash
+node scripts/patch-agent-comms.mjs "${PI_CODING_AGENT_DIR:-$HOME/.pi/agent}" --restore
+```
+
+`node --test scripts/*.test.mjs` includes a regression against the reviewed installed package: unreachable LAN advertisements are ignored, local TLS delivers a real frame, and genuine local connection errors remain visible. It requires a non-loopback IPv4 interface. It also verifies checksum/version refusal, backups, rollback and idempotence. This is a reversible local mitigation, not a claim that upstream LAN networking has been repaired.
 
 ## Maintained web tools
 

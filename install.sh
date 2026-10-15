@@ -61,6 +61,10 @@ esac
 
 AGENT_DIR="${PI_CODING_AGENT_DIR:-$HOME/.pi/agent}"
 install_shared_agents_md
+node "$ROOT/scripts/patch-agent-comms.mjs" "$AGENT_DIR"
+mkdir -p "$AGENT_DIR/local-packages"
+cp "$ROOT/scripts/patch-agent-comms.mjs" "$AGENT_DIR/local-packages/patch-agent-comms.mjs"
+cp "$ROOT/scripts/agent-comms-guard.ts" "$AGENT_DIR/local-packages/agent-comms-guard.ts"
 node "$ROOT/scripts/install-web-tools.mjs" "$AGENT_DIR" "${WITH_BROWSER[@]}"
 node "$ROOT/scripts/apply-settings.mjs" "$AGENT_DIR/settings.json" "$ROOT/settings.json"
 

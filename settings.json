@@ -15,7 +15,7 @@
   ],
   "extensions": [
     "-builtin:mcp",
-    "./npm/node_modules/agent-comms/dist/bridges/pi/extension.js"
+    "./local-packages/agent-comms-guard.ts"
   ],
   "defaultTools": [
     "+codemode"
